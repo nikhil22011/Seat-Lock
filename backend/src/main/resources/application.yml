@@ -1,0 +1,68 @@
+spring:
+  application:
+    name: seatlock
+  profiles:
+    default: dev
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc.time_zone: UTC
+
+server:
+  port: 8080
+
+seatlock:
+  jwt:
+    secret: ${JWT_SECRET:dev-only-secret-change-me-please-32bytes!!}
+    ttl: PT12H
+    issuer: seatlock
+  ticket-secret: ${TICKET_SECRET:dev-only-ticket-signing-secret}
+  hold-duration: ${HOLD_DURATION:PT5M}
+  max-seats-per-booking: 10
+  expiry-sweep-interval: PT10S
+  allowed-origins: ${ALLOWED_ORIGINS:http://localhost:5173}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+---
+# Zero-setup local development: in-memory H2 database + demo data.
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:h2:mem:seatlock;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;LOCK_TIMEOUT=10000
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+---
+# Production: PostgreSQL, configured from environment variables.
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/seatlock}
+    username: ${DATABASE_USERNAME:seatlock}
+    password: ${DATABASE_PASSWORD:seatlock}
+
+# No defaults here on purpose: the app refuses to start in prod without real secrets.
+seatlock:
+  jwt:
+    secret: ${JWT_SECRET}
+  ticket-secret: ${TICKET_SECRET}

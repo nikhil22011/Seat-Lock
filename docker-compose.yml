@@ -1,0 +1,41 @@
+# Production-like stack: PostgreSQL + Spring Boot API + React (nginx).
+#   docker compose up --build   ->   http://localhost:3000
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: seatlock
+      POSTGRES_USER: seatlock
+      POSTGRES_PASSWORD: seatlock
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U seatlock"]
+      interval: 5s
+      retries: 10
+
+  api:
+    build: ./backend
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DATABASE_URL: jdbc:postgresql://db:5432/seatlock
+      DATABASE_USERNAME: seatlock
+      DATABASE_PASSWORD: seatlock
+      JWT_SECRET: ${JWT_SECRET:-change-me-to-a-long-random-string-32-bytes-min}
+      TICKET_SECRET: ${TICKET_SECRET:-change-me-ticket-signing-secret}
+      ALLOWED_ORIGINS: http://localhost:3000
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+
+  web:
+    build: ./frontend
+    depends_on:
+      - api
+    ports:
+      - "3000:80"
+
+volumes:
+  pgdata:

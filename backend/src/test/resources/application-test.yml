@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:seatlock-test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;LOCK_TIMEOUT=10000
+    username: sa
+    password:
+
+seatlock:
+  # The sweeper is triggered by hand in tests.
+  expiry-sweep-interval: PT1H
