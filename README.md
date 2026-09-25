@@ -142,6 +142,13 @@ cd backend && mvn test
 
 Errors follow RFC 7807 (`application/problem+json`) with a stable `code` field, e.g. `SEAT_UNAVAILABLE`, `HOLD_EXPIRED`, `ALREADY_CHECKED_IN`.
 
+
+cd ~/Downloads/seatlock/backend
+mvn spring-boot:run
+
+cd ~/Downloads/seatlock/frontend
+npm run dev
+
 ## Project structure
 
 ```
