@@ -7,6 +7,13 @@ Pick seats on a live seat map, lock them for 5 minutes while you pay, and get a 
 Built with **Spring Boot 3 · Java 21 · Spring Security (JWT) · JPA · WebSockets (STOMP) · React 19 · TypeScript · TanStack Query · Tailwind CSS**.
 
 ---
+CREDS:
+
+user@seatlock.dev	Ticket buyer
+user2@seatlock.dev	Second buyer
+organizer@seatlock.dev	Event organizer
+
+(the password is password123 for al
 
 ## Features
 
